@@ -31,8 +31,7 @@ class Day4Test extends Specification {
         def day4 = new Day4(input)
 
         then:
-        day4.part1() == 0
-        true == false
+        day4.part1() == 2493
     }
 
 }
