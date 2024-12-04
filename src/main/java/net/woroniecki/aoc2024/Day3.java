@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class Day3 {
 
     public static void main(String[] args) {
+        new Day3().part1();
         new Day3().part2();
     }
 
