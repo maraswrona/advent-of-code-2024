@@ -20,7 +20,8 @@ class Day4Test extends Specification {
                         """.stripIndent().strip()
 
         expect:
-        new Day4(input).part1() == 18
+        new Day4(input).countXmas() == 18
+        new Day4(input).countCrossMas() == 9
     }
 
     def "puzzle"() {
@@ -31,7 +32,8 @@ class Day4Test extends Specification {
         def day4 = new Day4(input)
 
         then:
-        day4.part1() == 2493
+        day4.countXmas() == 2493
+        day4.countCrossMas() == 1890
     }
 
 }

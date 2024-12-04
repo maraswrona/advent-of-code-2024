@@ -2,7 +2,6 @@ package net.woroniecki.aoc2024;
 
 public class Day4 {
 
-    private static final String WORD = "XMAS";
     private final char[][] table;
 
     public Day4(String input) {
@@ -13,43 +12,70 @@ public class Day4 {
         }
     }
 
-    public int part1() {
+    public int countXmas() {
         int sum = 0;
         for (int i = 0; i < table.length; i++) {
             char[] row = table[i];
             for (int j = 0; j < row.length; j++) {
                 char ch = row[j];
-                if (ch == WORD.charAt(0)) {
-                    sum += countWords(i, j);
+                if (ch == 'X') {
+                    sum += countWordsAround("XMAS", i, j);
                 }
             }
         }
         return sum;
     }
 
-    private int countWords(int x, int y) {
+    public int countCrossMas() {
+        int sum = 0;
+        for (int i = 0; i < table.length; i++) {
+            char[] row = table[i];
+            for (int j = 0; j < row.length; j++) {
+                char ch = row[j];
+                if (ch == 'A') {
+                    sum += checkWordsCrossing("MAS", i, j) ? 1 : 0;
+                }
+            }
+        }
+        return sum;
+    }
+
+    private boolean checkWordsCrossing(String word, int x, int y) {
+        int count = 0;
+        for (int i = -1; i <= 1; i++) {
+            if (i == 0) continue;
+            for (int j = -1; j <= 1; j++) {
+                if (j == 0) continue;
+
+                count += checkWord(word, x + i, y + j, -i, -j) ? 1 : 0;
+            }
+        }
+        return count == 2;
+    }
+
+    private int countWordsAround(String word, int x, int y) {
         int count = 0;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                count += checkWord(x, y, i, j) ? 1 : 0;
+                count += checkWord(word, x, y, i, j) ? 1 : 0;
             }
         }
         return count;
     }
 
-    private boolean checkWord(int x, int y, int dirX, int dirY) {
+    private boolean checkWord(String word, int x, int y, int dirX, int dirY) {
         if (dirX == 0 && dirY == 0) {
             return false;
         }
 
-        for (int i = 0; i < WORD.length(); i++) {
+        for (int i = 0; i < word.length(); i++) {
             int x2 = x + dirX * i;
             int y2 = y + dirY * i;
             if (!checkCoords(x2, y2)) {
                 return false;
             }
 
-            char charChecked = WORD.charAt(i);
+            char charChecked = word.charAt(i);
             char charFromTable = table[x2][y2];
             if (charChecked != charFromTable) {
                 return false;
