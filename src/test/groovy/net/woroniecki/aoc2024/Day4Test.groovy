@@ -17,7 +17,7 @@ class Day4Test extends Specification {
                         SAXAMASAAA
                         MAMMMXMMMM
                         MXMXAXMASX
-                        """.stripIndent().stripIndent()
+                        """.stripIndent().strip()
 
         expect:
         new Day4(input).part1() == 18
