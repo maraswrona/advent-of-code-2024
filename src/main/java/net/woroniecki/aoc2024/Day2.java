@@ -1,51 +1,35 @@
 package net.woroniecki.aoc2024;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
 public class Day2 {
 
+    private final List<List<Integer>> reports;
 
-    public static void main(String[] args) throws Exception {
-        new Day2().part1();
-        new Day2().part2();
+    public Day2(String input) {
+        reports = new ArrayList<>();
+        for (String line : input.split("\n")) {
+            List<Integer> report = Arrays.stream(line.split(" "))
+                    .map(String::trim)
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            reports.add(report);
+        }
     }
 
-    private List<List<Integer>> reports;
-
-    private void part1() throws Exception {
-        readData();
-        int sum = reports.stream()
+    public int safe1() throws Exception {
+        return reports.stream()
                 .mapToInt(r -> isSafe(r) ? 1 : 0)
                 .sum();
-        log.info("Safe reports: {}", sum);
     }
 
-    private void part2() throws Exception {
-        readData();
-        int sum = reports.stream()
+    public int safe2() throws Exception {
+        return reports.stream()
                 .mapToInt(r -> isSafe2(r) ? 1 : 0)
                 .sum();
-        log.info("Safe reports: {}", sum);
-    }
-
-    private boolean isSafe2(List<Integer> report) {
-        if (isSafe(report)) {
-            return true;
-        }
-        for (int i = 0; i < report.size(); i++) {
-            List<Integer> copy = new ArrayList<>(report);
-            copy.remove(i);
-            if(isSafe(copy)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean isSafe(List<Integer> report) {
@@ -66,25 +50,18 @@ public class Day2 {
         return true;
     }
 
-    private void readData() {
-        log.info("Loading data");
-        reports = new ArrayList<>();
-        try {
-            File file = new File(this.getClass().getResource("/aoc2024/day2.txt").getFile());
-            List<String> lines = FileUtils.readLines(file, "UTF-8");
-            for (String line : lines) {
-                String[] numbers = line.split(" ");
-                List<Integer> report = new ArrayList<>();
-                for (String number : numbers) {
-                    Integer i = Integer.parseInt(number);
-                    report.add(i);
-                }
-                reports.add(report);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    private boolean isSafe2(List<Integer> report) {
+        if (isSafe(report)) {
+            return true;
         }
-        log.info("Data loaded - {} reports", reports.size());
+        for (int i = 0; i < report.size(); i++) {
+            List<Integer> copy = new ArrayList<>(report);
+            copy.remove(i);
+            if (isSafe(copy)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
