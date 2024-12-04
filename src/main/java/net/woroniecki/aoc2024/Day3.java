@@ -1,35 +1,27 @@
 package net.woroniecki.aoc2024;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
 public class Day3 {
 
-    public static void main(String[] args) {
-        new Day3().part1();
-        new Day3().part2();
+    private final String input;
+
+    public Day3(String input) {
+        this.input = input;
     }
 
-    private void part1() {
-        String txt = loadData();
-
+    public int part1() {
         Pattern pattern = Pattern.compile("mul\\((\\d{1,3}),(\\d{1,3})\\)");
-        Matcher matcher = pattern.matcher(txt);
+        Matcher matcher = pattern.matcher(input);
 
         List<String> matches = new ArrayList<>();
         while (matcher.find()) {
             matches.add(matcher.group());
         }
-        log.info("{}", matches);
 
         int sum = matches.stream()
                 .mapToInt(mul -> {
@@ -46,21 +38,19 @@ public class Day3 {
                     return 0;
                 }).sum();
 
-        log.info("{}", sum);
+        return sum;
 
     }
 
-    private void part2() {
-        String txt = loadData();
+    public int part2() {
 
         Pattern pattern = Pattern.compile("(?<mul>mul\\((\\d{1,3}),(\\d{1,3})\\))|(?<do>do\\(\\))|(?<dont>don't\\(\\))");
-        Matcher matcher = pattern.matcher(txt);
+        Matcher matcher = pattern.matcher(input);
 
         List<String> matches = new ArrayList<>();
         while (matcher.find()) {
             matches.add(matcher.group());
         }
-        log.info("{}", matches);
 
         AtomicBoolean enabled = new AtomicBoolean(true);
         int sum = matches.stream()
@@ -87,17 +77,8 @@ public class Day3 {
                     return 0;
                 }).sum();
 
-        log.info("{}", sum);
+      return sum;
 
     }
 
-    private String loadData() {
-        try {
-            File file = new File(this.getClass().getResource("/aoc2024/day3.txt").getFile());
-            String txt = FileUtils.readFileToString(file, "UTF-8");
-            return txt;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
