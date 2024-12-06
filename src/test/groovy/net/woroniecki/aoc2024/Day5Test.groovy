@@ -54,7 +54,7 @@ class Day5Test extends Specification {
 
         then:
         day5.part1() == 4569
-        //day5.part2() == 0
+        day5.part2() == 0
     }
 
 }

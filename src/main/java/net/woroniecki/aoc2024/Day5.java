@@ -35,19 +35,8 @@ public class Day5 {
     public int part1() {
         int sum = 0;
         for (List<Integer> list : lists) {
-            boolean correct = false;
-            for (int i = 0; i < list.size() - 1; i++) {
-                int a = list.get(i);
-                int b = list.get(i + 1);
-                String rule = a + "|" + b;
-                if(rules.contains(rule)) {
-                    correct = true;
-                } else {
-                    correct = false;
-                    break;
-                }
-            }
-            if(correct) {
+            boolean correct = isCorrect(list);
+            if (correct) {
                 int middle = list.get(list.size() / 2);
                 sum += middle;
             }
@@ -55,10 +44,52 @@ public class Day5 {
         return sum;
     }
 
+    private boolean isCorrect(List<Integer> list) {
+        boolean correct = false;
+        for (int i = 0; i < list.size() - 1; i++) {
+            int a = list.get(i);
+            int b = list.get(i + 1);
+            String rule = a + "|" + b;
+            if (rules.contains(rule)) {
+                correct = true;
+            } else {
+                correct = false;
+                break;
+            }
+        }
+        return correct;
+    }
 
 
-    public void part2() {
+    public int part2() {
+        int sum = 0;
+        for (List<Integer> list : lists) {
+            if (!isCorrect(list)) {
+                fix(list);
+                System.out.println("fixed list: " + list);
+                int middle = list.get(list.size() / 2);
+                sum += middle;
+            }
 
+        }
+        return sum;
+    }
+
+    private void fix(List<Integer> list) {
+        while(!isCorrect(list)) {
+            boolean fixed = false;
+            for (int i = 0; i < list.size() - 1; i++) {
+                int a = list.get(i);
+                int b = list.get(i + 1);
+                String rule = a + "|" + b;
+                if (!rules.contains(rule)) {
+                    list.set(i, b);
+                    list.set(i + 1, a);
+                    fixed = true;
+                }
+            }
+
+        }
     }
 
 
