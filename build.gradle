@@ -16,6 +16,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.18.0'
     implementation 'com.google.guava:guava:33.3.1-jre'
     implementation 'org.javatuples:javatuples:1.2'
+    implementation 'one.util:streamex:0.8.3'
 
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
