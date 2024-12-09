@@ -6,12 +6,12 @@ public class DayTemplate {
 
     }
 
-    public void part1() {
-
+    public int part1() {
+        return 0;
     }
 
-    public void part2() {
-
+    public int part2() {
+        return 0;
     }
 
 
