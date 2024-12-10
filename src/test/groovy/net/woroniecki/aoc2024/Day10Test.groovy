@@ -22,7 +22,7 @@ class Day10Test extends Specification {
 
         then:
         day.part1() == 36
-        day.part2() == 0
+        day.part2() == 81
     }
 
     def "puzzle"() {
@@ -33,8 +33,8 @@ class Day10Test extends Specification {
         def day = new Day10(input)
 
         then:
-        day.part1() == 0
-        day.part2() == 0
+        day.part1() == 531
+        day.part2() == 1210
     }
 
 }
