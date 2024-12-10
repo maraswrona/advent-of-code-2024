@@ -43,4 +43,26 @@ class Day9Test extends Specification {
         day.part2() == 6363268339304
     }
 
+    def "evil1"() {
+        given:
+        def input = Util.readFileToString("/aoc2024/day9.evil1.txt")
+
+        when:
+        def day = new Day9(input)
+
+        then:
+        day.part2() == 97898222299196
+    }
+
+    def "evil2"() {
+        given:
+        def input = Util.readFileToString("/aoc2024/day9.evil2.txt")
+
+        when:
+        def day = new Day9(input)
+
+        then:
+        day.part2() == 5799706413896802
+    }
+
 }
