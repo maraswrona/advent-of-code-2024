@@ -1,5 +1,6 @@
 package net.woroniecki.aoc2024
 
+import net.woroniecki.Util
 import spock.lang.Specification
 
 class Day6Test extends Specification {

@@ -1,4 +1,5 @@
-package net.woroniecki.aoc2024
+package net.woroniecki
+
 
 import spock.lang.Specification
 
