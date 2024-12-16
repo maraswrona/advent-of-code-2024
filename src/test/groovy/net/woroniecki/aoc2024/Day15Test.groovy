@@ -32,15 +32,12 @@ class Day15Test extends Specification {
                         v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
                         """.stripIndent().strip()
 
-        when:
-        def day = new Day15(input)
-
-        then:
-        day.part1() == 10092
-        //day.part2() == 0
+        expect:
+        new Day15(input, false).part1() == 10092
+        new Day15(input, true).part2() == 9021
     }
 
-    def "example large only last stage and gps"() {
+    def "example large only last stage and gps part 1"() {
         given:
         def input = """
                         ##########
@@ -57,11 +54,8 @@ class Day15Test extends Specification {
                         >
                         """.stripIndent().strip()
 
-        when:
-        def day = new Day15(input)
-
-        then:
-        day.calculateGPS() == 10092
+        expect:
+        new Day15(input, false).calculateGPS() == 10092
     }
 
     def "example small full part 1"() {
@@ -80,7 +74,7 @@ class Day15Test extends Specification {
                         """.stripIndent().strip()
 
         when:
-        def day = new Day15(input)
+        def day = new Day15(input, false)
 
         then:
         day.part1() == 2028
@@ -102,7 +96,7 @@ class Day15Test extends Specification {
                         """.stripIndent().strip()
 
         when:
-        def day = new Day15(input)
+        def day = new Day15(input, false)
 
         then:
         day.calculateGPS() == 2028
@@ -120,7 +114,7 @@ class Day15Test extends Specification {
                         """.stripIndent().strip()
 
         when:
-        def day = new Day15(input)
+        def day = new Day15(input, false)
 
         then:
         day.calculateGPS() == 104
@@ -131,12 +125,9 @@ class Day15Test extends Specification {
         given:
         def input = Util.readFileToString("/aoc2024/day15.txt")
 
-        when:
-        def day = new Day15(input)
-
-        then:
-        day.part1() == 1430536
-        day.part2() == 0
+        expect:
+        new Day15(input, false).part1() == 1430536
+        new Day15(input, true).part2() == 0
     }
 
 }

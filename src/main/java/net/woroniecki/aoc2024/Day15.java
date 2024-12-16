@@ -1,21 +1,26 @@
 package net.woroniecki.aoc2024;
 
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import lombok.AllArgsConstructor;
+import lombok.Setter;
 
 public class Day15 {
 
     final Block[][] grid;
+
     final List<Character> moves = new ArrayList<>();
 
     @AllArgsConstructor
     public static class Block {
+
         int x, y;
 
         @Setter
@@ -35,6 +40,14 @@ public class Day15 {
 
         public boolean isEmpty() {
             return ch == '.';
+        }
+
+        public boolean hasLBox() {
+            return ch == '[';
+        }
+
+        public boolean hasRBox() {
+            return ch == ']';
         }
     }
 
@@ -68,17 +81,37 @@ public class Day15 {
         }
     }
 
-    public Day15(String input) {
+    public Day15(String input, boolean part2) {
         String[] parts = input.split("(\r?\n){2}");
 
         String[] lines = parts[0].split("\n");
         grid = new Block[lines.length][];
-        for (int y = 0; y < lines.length; y++) {
-            char[] chars = lines[y].trim().toCharArray();
-            grid[y] = new Block[chars.length];
-            for (int x = 0; x < chars.length; x++) {
-                char ch = chars[x];
-                grid[y][x] = new Block(x, y, ch);
+
+        if (!part2) {
+            for (int y = 0; y < lines.length; y++) {
+                char[] chars = lines[y].trim().toCharArray();
+                grid[y] = new Block[chars.length];
+                for (int x = 0; x < chars.length; x++) {
+                    char ch = chars[x];
+                    grid[y][x] = new Block(x, y, ch);
+                }
+            }
+        } else {
+            for (int y = 0; y < lines.length; y++) {
+                char[] chars = lines[y].trim().toCharArray();
+                grid[y] = new Block[chars.length * 2];
+                for (int x = 0; x < chars.length; x++) {
+                    char ch = chars[x];
+                    String ch2 = switch (ch) {
+                        case '@' -> "@.";
+                        case '.' -> "..";
+                        case 'O' -> "[]";
+                        case '#' -> "##";
+                        default -> throw new IllegalStateException("Unexpected value: " + ch);
+                    };
+                    grid[y][x * 2] = new Block(x * 2, y, ch2.charAt(0));
+                    grid[y][x * 2 + 1] = new Block(x * 2 + 1, y, ch2.charAt(1));
+                }
             }
         }
 
@@ -90,7 +123,10 @@ public class Day15 {
     }
 
     public int part1() {
+        return completeAllMoves();
+    }
 
+    private int completeAllMoves() {
         for (char ch : moves) {
             Block robot = findRobot();
             Move from = Move.from(ch);
@@ -99,7 +135,6 @@ public class Day15 {
         return calculateGPS();
     }
 
-
     public void move(Move m) {
         Block robot = findRobot();
         tryMove(robot, m);
@@ -107,42 +142,62 @@ public class Day15 {
 
     public int calculateGPS() {
         return allBlocks()
-                .filter(Block::hasBox)
+                .filter(b -> b.hasBox() || b.hasLBox())
                 .mapToInt(block -> block.y * 100 + block.x)
                 .sum();
-
     }
 
-    private boolean tryMove(Block block, Move move) {
+    private void tryMove(Block block, Move move) {
         int dx = move.dx();
         int dy = move.dy();
 
-        int nx = block.x + dx;
-        int ny = block.y + dy;
+        Set<Block> toMove = new HashSet<>();
+        LinkedList<Block> stack = new LinkedList<>();
+        stack.push(block);
 
-        if (grid[ny][nx].hasWall()) {
-            return false;
-        }
+        while (!stack.isEmpty()) {
+            Block b = stack.pop();
+            toMove.add(b);
+            int nx = b.x + dx;
+            int ny = b.y + dy;
+            Block next = grid[ny][nx];
+            if (next.hasWall()) {
+                return;
+            } else if (next.hasBox()) {
+                stack.push(next);
+            } else if (next.hasRBox()) {
+                stack.push(next);
+                if(move == Move.UP || move == Move.DOWN) {
+                    stack.push(grid[ny][nx-1]);
+                }
 
-        if (grid[ny][nx].hasBox()) {
-            boolean moved = tryMove(grid[ny][nx], move);
-            if (moved) {
-                grid[ny][nx].setCh(block.ch);
-                block.setCh('.');
-                return true;
-            } else {
-                return false;
+            } else if (next.hasLBox()) {
+                stack.push(next);
+                if(move == Move.UP || move == Move.DOWN) {
+                    stack.push(grid[ny][nx + 1]);
+                }
             }
         }
 
-        grid[ny][nx].setCh(block.ch);
-        block.setCh('.');
-        return true;
-
+        while (!toMove.isEmpty()) {
+            Optional<Block> blockToMove = toMove.stream().filter(b -> {
+                int nx = b.x + dx;
+                int ny = b.y + dy;
+                Block next = grid[ny][nx];
+                return next.isEmpty();
+            }).findFirst();
+            blockToMove.ifPresent(b -> {
+                int nx = b.x + dx;
+                int ny = b.y + dy;
+                grid[ny][nx].setCh(b.ch);
+                b.setCh('.');
+                toMove.remove(b);
+            });
+        }
     }
 
     public int part2() {
-        return 0;
+        return completeAllMoves();
     }
 
     public Block findRobot() {
@@ -156,6 +211,5 @@ public class Day15 {
     public Stream<Block> allBlocks() {
         return Arrays.stream(grid).flatMap(Arrays::stream);
     }
-
 
 }

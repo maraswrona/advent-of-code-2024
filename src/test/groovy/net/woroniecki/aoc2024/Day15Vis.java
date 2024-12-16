@@ -15,7 +15,7 @@ public class Day15Vis {
 
     public static void main(String[] args) throws IOException {
 
-        Day15 day = new Day15(Util.readFileToString("/aoc2024/day15.txt"));
+        Day15 day = new Day15(Util.readFileToString("/aoc2024/day15.txt"), true);
 
 
 //        Day15 day = new Day15(
@@ -28,12 +28,12 @@ public class Day15Vis {
 //                        "#......#\n" +
 //                        "########\n" +
 //                        "\n" +
-//                        "<^^>>>vv<v>>v<<");
+//                        "<^^>>>vv<v>>v<<", true);
 
 
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(15))
-                .setInitialTerminalSize(new TerminalSize(50, 50));
+                .setInitialTerminalSize(new TerminalSize(100, 50));
         Screen screen = null;
 
 
@@ -41,7 +41,9 @@ public class Day15Vis {
             screen = terminalFactory.createScreen();
             screen.startScreen();
 
+            boolean auto = false;
             boolean running = true;
+            int curr = 0;
             while (running) {
                 KeyStroke keyStroke = screen.pollInput();
                 if (keyStroke != null) {
@@ -50,9 +52,18 @@ public class Day15Vis {
                         case ArrowLeft -> day.move(Day15.Move.LEFT);
                         case ArrowUp -> day.move(Day15.Move.UP);
                         case ArrowDown -> day.move(Day15.Move.DOWN);
+                        case Character -> auto = (keyStroke.getCharacter() == ' ') != auto;
                         case Escape -> running = false;
                         case null, default -> {
                         }
+                    }
+                }
+
+                if (auto) {
+                    for (int i = 0; i < 10; i++) {
+                        Day15.Move c = Day15.Move.from(day.moves.get(curr));
+                        day.move(c);
+                        curr++;
                     }
                 }
 
@@ -102,6 +113,8 @@ public class Day15Vis {
                 textGraphics.setForegroundColor(TextColor.ANSI.MAGENTA);
             } else if (r.hasRobot()) {
                 textGraphics.setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
+            } else if(r.hasLBox() || r.hasRBox()) {
+                textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
             } else {
                 textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
             }
