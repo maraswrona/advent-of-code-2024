@@ -8,7 +8,6 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 import net.woroniecki.Util;
-
 import java.io.IOException;
 
 public class Day16Vis {
@@ -16,7 +15,6 @@ public class Day16Vis {
     public static void main(String[] args) throws IOException {
 
         Day16 day = new Day16(Util.readFileToString("/aoc2024/day16.txt"));
-
 
 //        Day16 day = new Day16("###############\n" +
 //                "#.......#....E#\n" +
@@ -34,12 +32,10 @@ public class Day16Vis {
 //                "#S..#.....#...#\n" +
 //                "###############");
 
-
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
-                .setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(7))
+                .setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(5))
                 .setInitialTerminalSize(new TerminalSize(150, 150));
         Screen screen = null;
-
 
         try {
             screen = terminalFactory.createScreen();
@@ -117,10 +113,27 @@ public class Day16Vis {
             textGraphics.putString(r.x, r.y, String.valueOf(r.ch));
         });
 
+        textGraphics.setForegroundColor(TextColor.ANSI.BLACK_BRIGHT);
+        day.astar.getClosedList().forEach(n -> {
+            textGraphics.putString(n.x, n.y, ",");
+        });
+
+        textGraphics.setForegroundColor(TextColor.ANSI.RED);
+        day.astar.getOpenList().forEach(n -> {
+            textGraphics.putString(n.x, n.y, "*");
+        });
+
         textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
         day.astar.reconstructPath(day.astar.getCurrent()).forEach(n -> {
             textGraphics.putString(n.x, n.y, "*");
         });
+
+        textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+        Day16.Node curr = day.astar.getCurrent();
+        if (curr != null) {
+            textGraphics.putString(curr.x, curr.y, "*");
+            textGraphics.putString(0, 0, String.valueOf(curr.g));
+        }
 
         screen.refresh();
     }

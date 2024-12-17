@@ -1,20 +1,35 @@
 package net.woroniecki.aoc2024;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.*;
+import groovy.util.logging.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
+@lombok.extern.slf4j.Slf4j
+@Slf4j
 public class Day16 {
 
     private final Block[][] grid;
+
     private Node start, end;
+
     AStar astar;
 
     @AllArgsConstructor
     public static class Block {
+
         int x, y;
+
         char ch;
     }
 
@@ -30,7 +45,7 @@ public class Day16 {
 
                 if (chars[x] == 'S') {
                     start = new Node(x, y);
-                    grid[y][x] =  new Block(x, y, chars[x]);
+                    grid[y][x] = new Block(x, y, chars[x]);
                 }
                 if (chars[x] == 'E') {
                     end = new Node(x, y);
@@ -52,10 +67,13 @@ public class Day16 {
         return 0;
     }
 
-
+    @ToString(of = { "x", "y", "g", "h" })
     static class Node implements Comparable<Node> {
+
         int x, y;
+
         int g, h; // Koszty: g (start->tu), h (tu->cel)
+
         Node parent;
 
         public Node(int x, int y) {
@@ -86,14 +104,22 @@ public class Day16 {
         }
     }
 
+    @Slf4j
     @Getter
     public static class AStar {
-        private final int[][] DIRECTIONS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // Ruchy: góra, prawo, dół, lewo
+
+        private final int[][] DIRECTIONS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }; // Ruchy: góra, prawo, dół, lewo
+
         private final PriorityQueue<Node> openList = new PriorityQueue<>();
+
         private final Set<Node> closedList = new HashSet<>();
+
         private final Node start;
+
         private final Node end;
+
         private Node current;
+
         private final Block[][] grid;
 
         AStar(Node start, Node end, Block[][] grid) {
@@ -106,11 +132,14 @@ public class Day16 {
             openList.add(this.start);
         }
 
-
         public void step() {
+            if (end.equals(current)) return;
+
             if (!openList.isEmpty()) {
+                log.info("current {}", current);
                 current = openList.poll();
                 if (current.equals(end)) {
+                    log.info("reached end");
                     return;
                 }
 
@@ -144,7 +173,7 @@ public class Day16 {
         }
 
         private boolean isValid(int x, int y) {
-            return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[y][x].ch == '.';
+            return x >= 0 && y >= 0 && y < grid.length && x < grid[0].length && grid[y][x].ch != '#';
         }
 
         public List<Node> reconstructPath(Node node) {
@@ -161,7 +190,5 @@ public class Day16 {
     public Stream<Block> allBlocks() {
         return Arrays.stream(grid).flatMap(Arrays::stream);
     }
-
-
 
 }
