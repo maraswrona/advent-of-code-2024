@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class Day16Test extends Specification {
 
-    def "test"() {
+    def "example 1"() {
         given:
         def input = """
                         ###############
@@ -30,8 +30,38 @@ class Day16Test extends Specification {
         def day = new Day16(input)
 
         then:
-        day.part1() == 0
-        day.part2() == 0
+        day.part1() == 7036
+        //day.part2() == 0
+    }
+
+    def "example 2"() {
+        given:
+        def input = """
+                        #################
+                        #...#...#...#..E#
+                        #.#.#.#.#.#.#.#.#
+                        #.#.#.#...#...#.#
+                        #.#.#.#.###.#.#.#
+                        #...#.#.#.....#.#
+                        #.#.#.#.#.#####.#
+                        #.#...#.#.#.....#
+                        #.#.#####.#.###.#
+                        #.#.#.......#...#
+                        #.#.###.#####.###
+                        #.#.#...#.....#.#
+                        #.#.#.#####.###.#
+                        #.#.#.........#.#
+                        #.#.#.#########.#
+                        #S#.............#
+                        #################
+                        """.stripIndent().strip()
+
+        when:
+        def day = new Day16(input)
+
+        then:
+        day.part1() == 11048
+//        day.part2() == 0
     }
 
     def "puzzle"() {
@@ -42,7 +72,7 @@ class Day16Test extends Specification {
         def day = new Day16(input)
 
         then:
-        day.part1() == 0
+        day.part1() == 0 // 102508 wrong?
         day.part2() == 0
     }
 

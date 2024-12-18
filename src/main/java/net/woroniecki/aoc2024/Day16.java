@@ -1,23 +1,22 @@
 package net.woroniecki.aoc2024;
 
 import groovy.util.logging.Slf4j;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.javatuples.Pair;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 @lombok.extern.slf4j.Slf4j
 @Slf4j
+
 public class Day16 {
+
+    public String toString() {
+        return "";
+    }
 
     private final Block[][] grid;
 
@@ -45,36 +44,37 @@ public class Day16 {
 
                 if (chars[x] == 'S') {
                     start = new Node(x, y);
-                    grid[y][x] = new Block(x, y, chars[x]);
                 }
                 if (chars[x] == 'E') {
                     end = new Node(x, y);
-                    grid[y][x] = new Block(x, y, chars[x]);
                 }
             }
         }
 
+        start.direction = AStar.Direction.RIGHT;
         astar = new AStar(start, end, grid);
     }
 
     public int part1() {
-        List<Node> path = new AStar(start, end, grid).reconstructPath(end);
-        System.out.println(path);
-        return 0;
+        AStar path = new AStar(start, end, grid);
+        path.complete();
+        return path.current.g;
     }
 
     public int part2() {
         return 0;
     }
 
-    @ToString(of = { "x", "y", "g", "h" })
+    @ToString(of = {"x", "y", "g", "h"})
     static class Node implements Comparable<Node> {
 
         int x, y;
 
-        int g, h; // Koszty: g (start->tu), h (tu->cel)
+        int g, h;
 
         Node parent;
+
+        AStar.Direction direction;
 
         public Node(int x, int y) {
             this.x = x;
@@ -82,7 +82,7 @@ public class Day16 {
         }
 
         public int f() {
-            return g + h; // Łączny koszt
+            return g + h;
         }
 
         @Override
@@ -108,9 +108,21 @@ public class Day16 {
     @Getter
     public static class AStar {
 
-        private final int[][] DIRECTIONS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }; // Ruchy: góra, prawo, dół, lewo
+        public enum Direction {
+            UP(0, -1),
+            DOWN(0, 1),
+            RIGHT(1, 0),
+            LEFT(-1, 0);
+            int dx, dy;
+
+            Direction(int dx, int dy) {
+                this.dx = dx;
+                this.dy = dy;
+            }
+        }
 
         private final PriorityQueue<Node> openList = new PriorityQueue<>();
+        private final Map<Pair<Integer, Integer>, Node> map = new HashMap<>();
 
         private final Set<Node> closedList = new HashSet<>();
 
@@ -130,37 +142,66 @@ public class Day16 {
             this.start.g = 0;
             this.start.h = heuristic(this.start, this.end);
             openList.add(this.start);
+            map.put(Pair.with(this.start.x, this.start.y), this.start);
+        }
+
+        public void complete() {
+            while (!end.equals(current)) {
+                step();
+            }
         }
 
         public void step() {
             if (end.equals(current)) return;
 
             if (!openList.isEmpty()) {
-                log.info("current {}", current);
+                //log.info("current {}", current);
                 current = openList.poll();
                 if (current.equals(end)) {
-                    log.info("reached end");
+                    //log.info("reached end");
                     return;
                 }
 
                 closedList.add(current);
 
-                for (int[] direction : DIRECTIONS) {
-                    int newX = current.x + direction[0];
-                    int newY = current.y + direction[1];
+                for (Direction d : Direction.values()) {
+                    int newX = current.x + d.dx;
+                    int newY = current.y + d.dy;
 
                     if (isValid(newX, newY)) {
-                        Node neighbor = new Node(newX, newY);
-                        if (closedList.contains(neighbor)) continue;
+                        Node next;
+                        if (map.containsKey(Pair.with(newX, newY))) {
+                            next = map.get(Pair.with(newX, newY));
+                            //System.out.println("found!");
+                        } else {
+                            next = new Node(newX, newY);
+                        }
 
-                        int tentativeG = current.g + 1; // Koszt przejścia (1 na kratkę)
-                        if (tentativeG < neighbor.g || !openList.contains(neighbor)) {
-                            neighbor.g = tentativeG;
-                            neighbor.h = heuristic(neighbor, end);
-                            neighbor.parent = current;
+                        if (closedList.contains(next)) continue;
 
-                            if (!openList.contains(neighbor)) {
-                                openList.add(neighbor);
+                        int tentativeG = current.g + 1 + (current.direction == d ? 0 : 1000);
+
+                        if (tentativeG < next.g) {
+                            System.out.println("tentative better!");
+                            if (openList.contains(next)) {
+                                System.out.println("better and already on list");
+                            } else {
+                                System.out.println("not yet on list");
+                            }
+                        }
+
+                        if (tentativeG < next.g || !openList.contains(next)) {
+                            next.g = tentativeG;
+                            next.h = heuristic(next, end);
+                            next.direction = d;
+                            next.parent = current;
+
+                            if (!openList.contains(next)) {
+                                openList.add(next);
+                                map.put(Pair.with(next.x, next.y), next);
+                            } else {
+                                openList.remove(next);
+                                openList.add(next);
                             }
                         }
                     }
@@ -169,7 +210,7 @@ public class Day16 {
         }
 
         private int heuristic(Node a, Node b) {
-            return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Heurystyka Manhattan
+            return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
         }
 
         private boolean isValid(int x, int y) {
