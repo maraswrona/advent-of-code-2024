@@ -7,14 +7,33 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
-import net.woroniecki.Util;
+import net.woroniecki.FileUtil;
 import java.io.IOException;
 
 public class Day16Vis {
 
     public static void main(String[] args) throws IOException {
+//
+//        char [][] lab = new char[20][];
+//        StringBuilder sb = new StringBuilder();
+//        for (int y = 0; y < 20; y++) {
+//            lab[y] = new char[20];
+//            for (int x = 0; x < 20; x++) {
+//                double rnd = new Random().nextDouble();
+//                lab[y][x] = rnd > 0.2 ? '.' : '#';
+//            }
+//            sb.append(lab[y]).append("\n");
+//        }
+//        lab[0][0] = 'S';
+//        lab[19][19] = 'E';
+//
+//        sb.replace(0, 1, "S");
+//        sb.replace(20*20 - 3, 20*20 - 1, "E");
 
-        Day16 day = new Day16(Util.readFileToString("/aoc2024/day16.txt"));
+
+        Day16 day = new Day16(FileUtil.readFileToString("/aoc2024/day16.txt"));
+//        Day16 day = new Day16(sb.toString());
+//        Day16 day = new Day16(FileUtil.readFileToString("/aoc2024/day16a.txt"));
 
 //        Day16 day = new Day16("###############\n" +
 //                "#.......#....E#\n" +
@@ -32,8 +51,27 @@ public class Day16Vis {
 //                "#S..#.....#...#\n" +
 //                "###############");
 
+//        Day16 day = new Day16("#################\n" +
+//                "#...#...#...#..E#\n" +
+//                "#.#.#.#.#.#.#.#.#\n" +
+//                "#.#.#.#...#...#.#\n" +
+//                "#.#.#.#.###.#.#.#\n" +
+//                "#...#.#.#.....#.#\n" +
+//                "#.#.#.#.#.#####.#\n" +
+//                "#.#...#.#.#.....#\n" +
+//                "#.#.#####.#.###.#\n" +
+//                "#.#.#.......#...#\n" +
+//                "#.#.###.#####.###\n" +
+//                "#.#.#...#.....#.#\n" +
+//                "#.#.#.#####.###.#\n" +
+//                "#.#.#.........#.#\n" +
+//                "#.#.#.#########.#\n" +
+//                "#S#.............#\n" +
+//                "#################");
+
+
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
-                .setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(5))
+                .setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(6))
                 .setInitialTerminalSize(new TerminalSize(150, 150));
         Screen screen = null;
 
@@ -60,7 +98,7 @@ public class Day16Vis {
                 }
 
                 if (auto) {
-                    for (int i = 0; i < 100; i++) {
+                    for (int i = 0; i < 50; i++) {
                         day.astar.step();
                     }
                 }
@@ -125,14 +163,20 @@ public class Day16Vis {
 
         textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
         day.astar.reconstructPath(day.astar.getCurrent()).forEach(n -> {
-            textGraphics.putString(n.x, n.y, "*");
+            char ch = switch(n.direction) {
+                case DOWN -> 'v';
+                case UP -> '^';
+                case LEFT -> '<';
+                case RIGHT -> '>';
+            };
+            textGraphics.putString(n.x, n.y, String.valueOf(ch));
         });
 
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
         Day16.Node curr = day.astar.getCurrent();
         if (curr != null) {
             textGraphics.putString(curr.x, curr.y, "*");
-            textGraphics.putString(0, 0, String.valueOf(curr.g));
+            textGraphics.putString(0, 0, String.format("g: %d h: %d f: %d", curr.g, curr.h, curr.f()));
         }
 
         screen.refresh();

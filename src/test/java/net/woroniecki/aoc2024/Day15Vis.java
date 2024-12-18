@@ -7,7 +7,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
-import net.woroniecki.Util;
+import net.woroniecki.FileUtil;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public class Day15Vis {
 
     public static void main(String[] args) throws IOException {
 
-        Day15 day = new Day15(Util.readFileToString("/aoc2024/day15.txt"), true);
+        Day15 day = new Day15(FileUtil.readFileToString("/aoc2024/day15.txt"), true);
 
 
 //        Day15 day = new Day15(
