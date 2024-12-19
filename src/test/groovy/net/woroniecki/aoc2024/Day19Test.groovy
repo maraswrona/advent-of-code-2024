@@ -38,7 +38,7 @@ class Day19Test extends Specification {
 
         then:
         day.part1() == 330
-        //day.part2() == 0
+        day.part2() == 950763269786650
     }
 
 }
