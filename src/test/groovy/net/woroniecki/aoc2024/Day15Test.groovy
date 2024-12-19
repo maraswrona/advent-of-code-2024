@@ -127,7 +127,7 @@ class Day15Test extends Specification {
 
         expect:
         new Day15(input, false).part1() == 1430536
-        new Day15(input, true).part2() == 0
+        new Day15(input, true).part2() == 1452348
     }
 
 }

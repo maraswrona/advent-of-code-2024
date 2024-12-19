@@ -23,7 +23,7 @@ public class Day10 {
         String[] lines = input.split("\n");
         table = new int[lines.length][];
         for (int i = 0; i < lines.length; i++) {
-            char[] chars = lines[i].toCharArray();
+            char[] chars = lines[i].trim().toCharArray();
             table[i] = new int[chars.length];
             for (int j = 0; j < chars.length; j++) {
                 table[i][j] = Integer.parseInt(String.valueOf(chars[j]));
