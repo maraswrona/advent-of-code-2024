@@ -66,7 +66,6 @@ public class Day5 {
         for (List<Integer> list : lists) {
             if (!isCorrect(list)) {
                 fix(list);
-                System.out.println("fixed list: " + list);
                 int middle = list.get(list.size() / 2);
                 sum += middle;
             }
@@ -76,7 +75,7 @@ public class Day5 {
     }
 
     private void fix(List<Integer> list) {
-        while(!isCorrect(list)) {
+        while (!isCorrect(list)) {
             boolean fixed = false;
             for (int i = 0; i < list.size() - 1; i++) {
                 int a = list.get(i);

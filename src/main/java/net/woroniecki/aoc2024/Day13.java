@@ -1,7 +1,6 @@
 package net.woroniecki.aoc2024;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
+
 public class Day13 {
 
 
@@ -49,10 +48,8 @@ public class Day13 {
 
             if (a.isPresent()) {
                 long price = a.get() * 3 + b.get();
-                log.info("Equation solvable. Price is: {}, A: {}, B: {}", price, a.get(), b.get());
                 return Optional.of(price);
             } else {
-                log.info("Equation not solvable");
                 return Optional.empty();
             }
         }

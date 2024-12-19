@@ -1,13 +1,11 @@
 package net.woroniecki.aoc2024;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Slf4j
 public class Day6 {
 
     private final Block[][] table;
@@ -63,7 +61,6 @@ public class Day6 {
         int obstacles = 0;
         for (int i = 0; i < visited.size(); i++) {
             Block b = visited.get(i);
-            log.info("analysing block {}/{}", i, visited.size());
             reset();
             b.putObstacle();
             WalkEnd walkEnd = completeWalk();

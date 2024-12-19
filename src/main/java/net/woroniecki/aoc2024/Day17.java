@@ -1,7 +1,6 @@
 package net.woroniecki.aoc2024;
 
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
 
 import java.util.*;
@@ -10,7 +9,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-@Slf4j
+
 public class Day17 {
 
     final long A, B, C;
@@ -43,14 +42,12 @@ public class Day17 {
 
         for (int i = program.length - 2; i >= 0; i--) {
             int desiredOutput = program[i];
-            log.info("Candidates on level {} for digit {} are {}", i, desiredOutput, candidates);
             candidates = candidates.stream()
                     .map(c -> findCandidates(c, desiredOutput))
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
         }
 
-        log.info("Final candidates are {}", candidates);
         return candidates.stream().mapToLong(i -> i).min().getAsLong();
 
     }
@@ -136,8 +133,7 @@ public class Day17 {
                         default -> throw new IllegalStateException("Unexpected value: " + instruction);
                     }
                 }
-            } catch (HaltException e) {
-                //System.out.println("Computer stopped");
+            } catch (HaltException ignored) {
             }
         }
 
