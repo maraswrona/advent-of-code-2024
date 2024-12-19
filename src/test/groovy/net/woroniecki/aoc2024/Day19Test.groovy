@@ -26,7 +26,7 @@ class Day19Test extends Specification {
 
         then:
         day.part1() == 6
-//        day.part2() == 0
+        day.part2() == 16
     }
 
     def "puzzle"() {

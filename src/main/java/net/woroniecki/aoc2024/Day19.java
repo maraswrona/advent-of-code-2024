@@ -3,8 +3,10 @@ package net.woroniecki.aoc2024;
 import one.util.streamex.StreamEx;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -39,7 +41,32 @@ public class Day19 {
     }
 
     public int part2() {
-        return 0;
+
+        Map<String, Integer> cache = new HashMap<>();
+        return designs.stream()
+                .mapToInt(design -> ways(design, cache))
+                .sum();
+    }
+
+    public int ways(String design, Map<String, Integer> cache) {
+        if (cache.containsKey(design)) {
+            return cache.get(design);
+        }
+
+        if (towelsSet.contains(design)) {
+            return 1;
+        }
+
+        int total = 0;
+        for (int i = 1; i < design.length(); i++) {
+            String part1 = design.substring(0, i);
+            String part2 = design.substring(i);
+
+            total += ways(part1, cache) * ways(part2, cache);
+        }
+
+        cache.put(design, total);
+        return total;
     }
 
 }
