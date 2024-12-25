@@ -1,12 +1,11 @@
 package net.woroniecki.aoc2024
 
-import net.woroniecki.DayTemplate
-import net.woroniecki.Util
+
 import spock.lang.Specification
 
 class Day21Test extends Specification {
 
-    def "test"() {
+    def "example"() {
         given:
         def input = """
                         029A
@@ -21,7 +20,7 @@ class Day21Test extends Specification {
 
         then:
         day.part1() == 126384
-        day.part2() == 0
+        //day.part2() == 0
     }
 
     def "puzzle"() {
@@ -38,8 +37,8 @@ class Day21Test extends Specification {
         def day = new Day21(input)
 
         then:
-        day.part1() == 0
-        day.part2() == 0
+        day.part1() == 109758
+        //day.part2() == 0
     }
 
 }
