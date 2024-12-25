@@ -1,17 +1,74 @@
 package net.woroniecki.aoc2024;
 
+import lombok.AllArgsConstructor;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Day22 {
 
     private final List<Long> secrets = new ArrayList<>();
+    final List<Buyer> buyers = new ArrayList<>();
+
+    @AllArgsConstructor
+    static class Buyer {
+        List<Long> secrets;
+        List<Integer> prices;
+        List<Integer> changes;
+
+        Map<String, Integer> combinations;
+    }
 
     public Day22(String input) {
+        int n = 2000;
         String[] split = input.split("\n");
         for (String line : split) {
             secrets.add(Long.valueOf(line.trim()));
         }
+
+        secrets.forEach(secret -> {
+
+            List<Long> secrets = new ArrayList<>(n+1);
+            secrets.add(secret);
+
+            List<Integer> prices = new ArrayList<>(n+1);
+            int price = (int) (secret % 10L);
+            prices.add(price);
+
+            List<Integer> changes = new ArrayList<>(n+1);
+
+            Map<String, Integer> combinations = new HashMap<>();
+
+            for (int i = 0; i < n; i++) {
+                secret = nextSecret(secret);
+                secrets.add(secret);
+
+                price = (int) (secret % 10L);
+                prices.add(price);
+
+                int change = price - prices.get(i);
+                changes.add(change);
+
+                if (i >= 3) {
+                    int ch1 = changes.get(i - 3);
+                    int ch2 = changes.get(i - 2);
+                    int ch3 = changes.get(i - 1);
+                    int ch4 = changes.get(i);
+
+                    String key = ch1 + "|" + ch2 + "|" + ch3 + "|" + ch4;
+                    if (!combinations.containsKey(key)) {
+                        combinations.put(key, price);
+                    }
+                }
+            }
+
+            Buyer buyer = new Buyer(secrets, prices, changes, combinations);
+            buyers.add(buyer);
+        });
     }
 
     public long part1() {
@@ -21,8 +78,26 @@ public class Day22 {
     }
 
     public int part2() {
-        return 0;
+
+        Map<String, Integer> totals = new HashMap<>();
+
+        for (Buyer buyer : buyers) {
+            buyer.combinations.forEach((key, price) -> {
+                if(totals.containsKey(key)) {
+                    totals.put(key, totals.get(key) + price);
+                } else {
+                    totals.put(key, price);
+                }
+            });
+        }
+
+        return EntryStream.of(totals)
+                .maxBy(Map.Entry::getValue)
+                .map(Map.Entry::getValue)
+                .orElseThrow();
+
     }
+
 
     public long nthSecret(long secret, int n) {
         for (int i = 0; i < n; i++) {

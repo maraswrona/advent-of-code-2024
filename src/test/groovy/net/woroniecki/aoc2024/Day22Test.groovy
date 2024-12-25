@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class Day22Test extends Specification {
 
-    def "example"() {
+    def "example part 1"() {
         given:
         def input = """
                         1
@@ -20,10 +20,25 @@ class Day22Test extends Specification {
 
         then:
         day.part1() == 37327623
-        //day.part2() == 0
     }
 
-    def "test"() {
+    def "example part 2"() {
+        given:
+        def input = """
+                        1
+                        2
+                        3
+                        2024
+                        """.stripIndent().strip()
+
+        when:
+        def day = new Day22(input)
+
+        then:
+        day.part2() == 23
+    }
+
+    def "test secret calculation"() {
         given:
         def day = new Day22("123")
 
@@ -45,6 +60,18 @@ class Day22Test extends Specification {
         day.nthSecret(2024, 2000) == 8667524
     }
 
+    def "test part 2 prices calculation"() {
+        given:
+        def day = new Day22("123")
+        Day22.Buyer buyer = day.buyers.get(0)
+
+        expect:
+        buyer.prices.subList(0, 10) == [3, 0, 6, 5, 4, 4, 6, 4, 4, 2]
+        buyer.changes.subList(0, 9) == [-3, 6, -1, -1, 0, 2, -2, 0, -2]
+
+
+    }
+
     def "puzzle"() {
         given:
         def input = Util.readFileToString("/aoc2024/day22.txt")
@@ -54,7 +81,7 @@ class Day22Test extends Specification {
 
         then:
         day.part1() == 15303617151
-        //day.part2() == 0
+        day.part2() == 1727
     }
 
 }
