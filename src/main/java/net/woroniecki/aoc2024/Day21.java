@@ -1,20 +1,18 @@
 package net.woroniecki.aoc2024;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
+import org.javatuples.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Slf4j
 public class Day21 {
-
-    // programmer --> robot --> robot --> robot --> pinpad
 
     private PinPad pinpad = new PinPad(
             "789\n" +
@@ -39,9 +37,9 @@ public class Day21 {
     public int part1() {
         return StreamEx.of(pins)
                 .mapToInt(pin -> {
-                    String moves = movesToTypeSequence(pin, pinpad);
+                    String moves = pinpad.movesToTypeSequence(pin);
                     for (int i = 0; i < 2; i++) {
-                        moves = movesToTypeSequence(moves, arrows);
+                        moves = arrows.movesToTypeSequence(moves);
                     }
                     log.info("{} --> {}", pin, moves);
                     int numeric = Integer.parseInt(pin.substring(0, pin.length() - 1));
@@ -50,56 +48,86 @@ public class Day21 {
                 .sum();
     }
 
-    public int part2() {
+
+    public long part2() {
         return StreamEx.of(pins)
-                .mapToInt(pin -> {
-                    String moves = movesToTypeSequence(pin, pinpad);
-                    for (int i = 0; i < 10; i++) {
-                        log.info("doing pin {} iteration {}", pin, i);
-                        moves = movesToTypeSequence(moves, arrows);
-                        log.info("got {} moves: {}", moves.length(), moves);
-                    }
-                    log.info("{} --> {}", pin, moves);
+                .mapToLong(pin -> {
+                    String moves = pinpad.movesToTypeSequence(pin);
+                    long cost = cost(moves, 25);
+                    log.info("Cost for pin {} is {}", pin, cost);
                     int numeric = Integer.parseInt(pin.substring(0, pin.length() - 1));
-                    return moves.length() * numeric;
+                    return cost * numeric;
                 })
                 .sum();
     }
 
-    public String movesToTypeSequence(String sequence, PinPad buttons) {
-        StringBuilder answer = new StringBuilder();
-        char[] charArray2 = sequence.toCharArray();
-        Button from = buttons.find('A');
-        for (char ch : charArray2) {
-            Button to = buttons.find(ch);
-            List<Move> moves = buttons.moves(from, to);
-            //log.info("Move from {} to {} requires {}", from.ch, to.ch, moves);
+    private static final Map<String, String> MOVES_LOOKUP = ImmutableMap.<String, String>builder()
+            .put("A^", "<A")
+            .put("A<", "v<<A")
+            .put("Av", "<vA")
+            .put("A>", "vA")
 
-            for (Move move : moves) {
-                answer.append(move.ch);
-            }
-            answer.append('A');
+            .put("^<", "v<A")
+            .put("^>", "v>A")
+            .put("^A", ">A")
 
-            from = to;
+            .put("<^", ">^A")
+            .put("<v", ">A")
+            .put("<A", ">>^A")
+
+            .put("v<", "<A")
+            .put("v>", ">A")
+            .put("vA", "^>A")
+
+            .put(">^", "<^A")
+            .put(">v", "<A")
+            .put(">A", "^A")
+            .build();
+    Map<Pair<String, Integer>, Long> cache2 = new HashMap<>();
+
+    public long cost(String sequence, int nprocessors) {
+        //log.info("calculating cost of {} at {}", sequence, nprocessors);
+
+        Pair<String, Integer> key = Pair.with(sequence, nprocessors);
+        if (cache2.containsKey(key)) {
+            return cache2.get(key);
         }
-        return answer.toString();
+
+        if (nprocessors == 0) {
+            int cost = sequence.length();
+            cache2.put(key, (long) cost);
+            return cost;
+        }
+
+        long cost = 0;
+        sequence = "A" + sequence;
+        for (int i = 0; i < sequence.length() - 1; i++) {
+            String step = sequence.substring(i, i + 2);
+            //log.info("Step {}", step);
+            final String nextSequence;
+            if (step.charAt(0) == step.charAt(1)) {
+                nextSequence = "A";
+            } else {
+                nextSequence = MOVES_LOOKUP.get(step);
+            }
+            cost += cost(nextSequence, nprocessors - 1);
+        }
+        cache2.put(key, cost);
+        return cost;
     }
 
 
     public enum Move {
-        UP('^', 0, -1),
-        DOWN('v', 0, 1),
-        LEFT('<', -1, 0),
-        RIGHT('>', 1, 0);
+        UP('^'),
+        DOWN('v'),
+        LEFT('<'),
+        RIGHT('>'),
+        A('A');
 
         private final char ch;
-        private final int dx;
-        private final int dy;
 
-        Move(char ch, int dx, int dy) {
+        Move(char ch) {
             this.ch = ch;
-            this.dx = dx;
-            this.dy = dy;
         }
 
         public static List<Move> fromDx(int dx) {
@@ -121,14 +149,7 @@ public class Day21 {
 
         private final Button[][] grid;
         private Button forbidden;
-
-        Button selected;
-        boolean pressed;
-
-        PinPad nextPinPad;
-
-        List<Character> output = new ArrayList<>();
-
+        private Button A;
 
         PinPad(String layout) {
             String[] lines = layout.split("\n");
@@ -145,7 +166,6 @@ public class Day21 {
                 }
             }
 
-            this.selected = find('A');
         }
 
         Button find(char ch) {
@@ -182,58 +202,32 @@ public class Day21 {
             }
 
             // all other cases do not matter
-            return StreamEx.of(xmoves).append(ymoves).toList();
+            return StreamEx.of(ymoves).append(xmoves).toList();
         }
 
+        public String movesToTypeSequence(String sequence) {
+            StringBuilder answer = new StringBuilder();
+            char[] charArray2 = sequence.toCharArray();
+            Button from = this.find('A');
+            for (char ch : charArray2) {
+                Button to = this.find(ch);
+                List<Move> moves = this.moves(from, to);
+                //log.info("Move from {} to {} requires {}", from.ch, to.ch, moves);
+
+                for (Move move : moves) {
+                    answer.append(move.ch);
+                }
+                answer.append('A');
+
+                from = to;
+            }
+            return answer.toString();
+        }
 
         public Stream<Button> all() {
             return Arrays.stream(grid).flatMap(Arrays::stream);
         }
 
-        public void moveSelected(Move move) {
-            int nx = selected.x + move.dx;
-            int ny = selected.y + move.dy;
-            if (checkCoords(nx, ny)) {
-                selected = grid[ny][nx];
-            }
-        }
-
-        private boolean checkCoords(int x, int y) {
-            return x >= 0 && x < grid[0].length &&
-                    y >= 0 && y < grid.length;
-        }
-
-        public void press() {
-            this.pressed = true;
-
-            if (nextPinPad != null) {
-                switch (selected.ch) {
-                    case 'A' -> nextPinPad.press();
-                    case '>' -> nextPinPad.moveSelected(Move.RIGHT);
-                    case '<' -> nextPinPad.moveSelected(Move.LEFT);
-                    case '^' -> nextPinPad.moveSelected(Move.UP);
-                    case 'v' -> nextPinPad.moveSelected(Move.DOWN);
-                }
-            } else {
-                output.add(selected.ch);
-            }
-
-        }
-
-        public void depress() {
-            this.pressed = false;
-        }
-
-        public void toggle() {
-            this.pressed = !pressed;
-        }
-
-
-        public void reset() {
-            selected = find('A');
-            pressed = false;
-            output.clear();
-        }
     }
 
     @AllArgsConstructor
@@ -241,6 +235,7 @@ public class Day21 {
         int x, y;
         char ch;
     }
-
-
 }
+
+
+
