@@ -149,7 +149,6 @@ public class Day21 {
 
         private final Button[][] grid;
         private Button forbidden;
-        private Button A;
 
         PinPad(String layout) {
             String[] lines = layout.split("\n");
