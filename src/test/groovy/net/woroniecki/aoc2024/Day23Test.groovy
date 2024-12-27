@@ -1,6 +1,6 @@
 package net.woroniecki.aoc2024
 
-import net.woroniecki.DayTemplate
+
 import net.woroniecki.Util
 import spock.lang.Specification
 
@@ -48,19 +48,19 @@ class Day23Test extends Specification {
 
         then:
         day.part1() == 7
-        day.part2() == 0
+        day.part2() == "co,de,ka,ta"
     }
 
     def "puzzle"() {
         given:
-        def input = Util.readFileToString("/aoc2024/day.txt")
+        def input = Util.readFileToString("/aoc2024/day23.txt")
 
         when:
         def day = new Day23(input)
 
         then:
-        day.part1() == 0
-        day.part2() == 0
+        day.part1() == 926
+        day.part2() == "az,ed,hz,it,ld,nh,pc,td,ty,ux,wc,yg,zz"
     }
 
 }
