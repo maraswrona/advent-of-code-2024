@@ -1,10 +1,10 @@
 package net.woroniecki.aoc2024;
 
-public class Day4 {
+public class Day04 {
 
     private final char[][] table;
 
-    public Day4(String input) {
+    public Day04(String input) {
         String[] lines = input.split("\n");
         table = new char[lines.length][];
         for (int i = 0; i < lines.length; i++) {

@@ -3,11 +3,11 @@ package net.woroniecki.aoc2024
 import net.woroniecki.Util
 import spock.lang.Specification
 
-class Day9Test extends Specification {
+class Day09Test extends Specification {
 
     static {
         List<Integer>.metaClass.encode1 = { -> delegate.collect { it -> it == -1 ? "." : it.toString() }.join("") }
-        List<Day9.File>.metaClass.encode2 = { ->
+        List<Day09.File>.metaClass.encode2 = { ->
             delegate.collect { it -> it.id == -1 ? "." * it.size : it.id.toString() * it.size }.join("") }
     }
 
@@ -18,7 +18,7 @@ class Day9Test extends Specification {
                         """.stripIndent().strip()
 
         when:
-        def day = new Day9(input)
+        def day = new Day09(input)
 
         then:
         day.unpackBlocks().encode1() == "00...111...2...333.44.5555.6666.777.888899";
@@ -36,7 +36,7 @@ class Day9Test extends Specification {
         def input = Util.readFileToString("/aoc2024/day9.txt")
 
         when:
-        def day = new Day9(input)
+        def day = new Day09(input)
 
         then:
         day.part1() == 6331212425418
@@ -48,7 +48,7 @@ class Day9Test extends Specification {
         def input = Util.readFileToString("/aoc2024/day9.evil1.txt")
 
         when:
-        def day = new Day9(input)
+        def day = new Day09(input)
 
         then:
         day.part2() == 97898222299196
@@ -59,7 +59,7 @@ class Day9Test extends Specification {
         def input = Util.readFileToString("/aoc2024/day9.evil2.txt")
 
         when:
-        def day = new Day9(input)
+        def day = new Day09(input)
 
         then:
         day.part2() == 5799706413896802

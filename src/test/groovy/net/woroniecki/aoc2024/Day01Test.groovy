@@ -3,7 +3,7 @@ package net.woroniecki.aoc2024
 import net.woroniecki.Util
 import spock.lang.Specification
 
-class Day1Test extends Specification {
+class Day01Test extends Specification {
 
     def "test"() {
         given:
@@ -17,7 +17,7 @@ class Day1Test extends Specification {
                     """.stripIndent().strip()
 
         when:
-        def day1 = new Day1(input)
+        def day1 = new Day01(input)
 
         then:
         day1.distance() == 11
@@ -29,7 +29,7 @@ class Day1Test extends Specification {
         def input = Util.readFileToString("/aoc2024/day1.txt")
 
         when:
-        def day1 = new Day1(input)
+        def day1 = new Day01(input)
 
         then:
         day1.distance() == 2344935

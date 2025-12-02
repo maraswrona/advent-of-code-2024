@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Day7 {
+public class Day07 {
 
     List<Case> cases = new ArrayList<>();
 
@@ -15,7 +15,7 @@ public class Day7 {
         List<Long> numbers;
     }
 
-    public Day7(String input) {
+    public Day07(String input) {
         for (String line : input.split("\n")) {
             String[] parts = line.split(" ");
             Long result = Long.parseLong(parts[0].substring(0, parts[0].length() - 1).trim());

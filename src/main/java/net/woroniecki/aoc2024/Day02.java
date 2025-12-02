@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Day2 {
+public class Day02 {
 
     private final List<List<Integer>> reports;
 
-    public Day2(String input) {
+    public Day02(String input) {
         reports = new ArrayList<>();
         for (String line : input.split("\n")) {
             List<Integer> report = Arrays.stream(line.split(" "))

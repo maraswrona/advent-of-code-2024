@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Day6 {
+public class Day06 {
 
     private final Block[][] table;
 
@@ -36,7 +36,7 @@ public class Day6 {
         }
     }
 
-    public Day6(String input) {
+    public Day06(String input) {
         String[] lines = input.split("\n");
         table = new Block[lines.length][];
         for (int i = 0; i < lines.length; i++) {

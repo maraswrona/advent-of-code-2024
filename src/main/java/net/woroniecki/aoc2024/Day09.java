@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Day9 {
+public class Day09 {
 
     private final String input;
 
-    public Day9(String input) {
+    public Day09(String input) {
         this.input = input;
     }
 

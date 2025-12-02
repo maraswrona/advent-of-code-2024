@@ -6,7 +6,7 @@ import one.util.streamex.StreamEx;
 
 import java.util.*;
 
-public class Day8 {
+public class Day08 {
 
     final List<Antenna> antennas = new ArrayList<>();
     final int width, height;
@@ -36,7 +36,7 @@ public class Day8 {
         }
     }
 
-    public Day8(String input) {
+    public Day08(String input) {
         String[] split = input.split("\n");
         height = split.length;
         width = split[0].trim().length();

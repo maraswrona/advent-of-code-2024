@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Day5 {
+public class Day05 {
 
     private final Set<String> rules = new HashSet<>();
     private final List<List<Integer>> lists = new ArrayList<>();
 
-    public Day5(String input) {
+    public Day05(String input) {
 
         for (String line : input.split("\n")) {
             if (line.trim().contains("|")) {

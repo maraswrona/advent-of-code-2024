@@ -3,7 +3,7 @@ package net.woroniecki.aoc2024
 import net.woroniecki.Util
 import spock.lang.Specification
 
-class Day4Test extends Specification {
+class Day04Test extends Specification {
 
     def "test"() {
         given:
@@ -21,8 +21,8 @@ class Day4Test extends Specification {
                         """.stripIndent().strip()
 
         expect:
-        new Day4(input).countXmas() == 18
-        new Day4(input).countCrossMas() == 9
+        new Day04(input).countXmas() == 18
+        new Day04(input).countCrossMas() == 9
     }
 
     def "puzzle"() {
@@ -30,7 +30,7 @@ class Day4Test extends Specification {
         def input = Util.readFileToString("/aoc2024/day4.txt")
 
         when:
-        def day4 = new Day4(input)
+        def day4 = new Day04(input)
 
         then:
         day4.countXmas() == 2493

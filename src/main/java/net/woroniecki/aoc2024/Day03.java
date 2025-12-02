@@ -6,11 +6,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Day3 {
+public class Day03 {
 
     private final String input;
 
-    public Day3(String input) {
+    public Day03(String input) {
         this.input = input;
     }
 

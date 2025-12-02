@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Day1 {
+public class Day01 {
 
     private final List<Integer> list1 = new ArrayList<>();
     private final List<Integer> list2 = new ArrayList<>();
 
-    public Day1(String input) {
+    public Day01(String input) {
         for (String line : input.split("\n")) {
             String[] parts = line.split(" {3}");
             String first = parts[0].trim();
