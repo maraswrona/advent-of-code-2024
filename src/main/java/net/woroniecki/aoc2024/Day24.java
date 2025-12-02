@@ -1,4 +1,4 @@
-package net.woroniecki;
+package net.woroniecki.aoc2024;
 
 
 import com.google.common.collect.ImmutableMap;
