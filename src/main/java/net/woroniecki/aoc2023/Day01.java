@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Day1 {
+public class Day01 {
 
     private final String input;
     private final Map<String, Integer> digits;
 
-    public Day1(String input) {
+    public Day01(String input) {
         this.input = input;
 
         List<String> words = List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
