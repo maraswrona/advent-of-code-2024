@@ -30,6 +30,6 @@ class Day10Test extends Specification {
 
         then:
         day.part1() == 422
-        day.part2() == 0
+        day.part2() == 16361
     }
 }

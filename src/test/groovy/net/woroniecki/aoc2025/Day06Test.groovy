@@ -31,7 +31,7 @@ class Day06Test extends Specification {
         def day = new Day06(input)
 
         then:
-        day.part1() == 0
+        day.part1() == 6100348226985
         day.part2() == 0
     }
 

@@ -48,7 +48,7 @@ class Day08Test extends Specification {
 
         then:
         day.part1(1000) == 122636
-        day.part2() == 0
+        day.part2() == 9271575747
     }
 
 }
