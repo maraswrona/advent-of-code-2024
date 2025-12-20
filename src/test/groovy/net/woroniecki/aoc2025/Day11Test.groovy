@@ -52,9 +52,7 @@ class Day11Test extends Specification {
 
         then:
         day.part1("svr", "out") == 8
-//        day.part2() == 2
-
-        day.graph.dp()
+        day.part2("svr", "out") == 2
     }
 
     def "puzzle"() {
@@ -66,24 +64,6 @@ class Day11Test extends Specification {
 
         then:
         day.part1("you", "out") == 688
-        day.part2() == 0
+        day.part2("svr", "out") == 293263494406608
     }
-
-    def "analysis()"() {
-
-        given:
-        def input = Util.readFileToString("/aoc2025/day11.txt")
-
-        when:
-        def day = new Day11(input)
-//        day.graph.analyzeGraphStructure()
-
-//        day.graph.part2()
-
-        day.graph.dp()
-
-        then:
-        1 == 1
-    }
-
 }
